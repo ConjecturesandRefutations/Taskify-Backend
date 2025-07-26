@@ -1,36 +1,47 @@
 // ℹ️ Gets access to environment variables/settings
-// https://www.npmjs.com/package/dotenv
 require("dotenv").config();
 
 // ℹ️ Connects to the database
 require("./db");
 
 // Handles http requests (express is node js framework)
-// https://www.npmjs.com/package/express
 const express = require("express");
-
-// Handles the handlebars
-// https://www.npmjs.com/package/hbs
+const cors = require("cors");
 const hbs = require("hbs");
 
 const app = express();
 
-// ℹ️ This function is getting exported from the config folder. It runs most pieces of middleware
+// ✅ Apply CORS immediately
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true
+}));
+
+// ❗️ Parse JSON and URL-encoded data before routes
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+// ℹ️ Remaining middleware (sessions, static files, logger, etc.)
 require("./config")(app);
 
-const capitalize = require("./utils/capitalize");
-const projectName = "backend";
+// 📦 Task API routes
+const taskRoutes = require("./routes/tasks");
+app.use("/api/tasks", taskRoutes);
 
-app.locals.appTitle = `${capitalize(projectName)} created with IronLauncher`;
-
-// 👇 Start handling routes here
+// 👇 View routes
 const indexRoutes = require("./routes/index.routes");
 app.use("/", indexRoutes);
 
 const authRoutes = require("./routes/auth.routes");
 app.use("/auth", authRoutes);
 
-// ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
+// 🧪 Test route
+app.get("/api/test", (req, res) => {
+  console.log("Test route hit!");
+  res.json({ message: "test successful" });
+});
+
+// ❗️ Error handling middleware
 require("./error-handling")(app);
 
 module.exports = app;

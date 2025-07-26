@@ -1,3 +1,5 @@
+const cors = require("cors");
+
 // We reuse this import in order to have access to the `body` property in requests
 const express = require("express");
 
@@ -31,6 +33,12 @@ const MONGO_URI =
 
 // Middleware configuration
 module.exports = (app) => {
+
+  app.use(cors({
+    origin: "http://localhost:3000",   
+    credentials: true                  
+  }));
+
   // In development environment the app logs
   app.use(logger("dev"));
 
