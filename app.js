@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: false }));
 require("./config")(app);
 
 // 📦 Task API routes
-const taskRoutes = require("./routes/tasks");
+const taskRoutes = require("./routes/tasks.routes");
 app.use("/api/tasks", taskRoutes);
 
 // 👇 View routes
