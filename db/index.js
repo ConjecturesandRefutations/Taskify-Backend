@@ -1,21 +1,13 @@
-// ℹ️ package responsible to make the connection with mongodb
-// https://www.npmjs.com/package/mongoose
 const mongoose = require("mongoose");
 
-const password = encodeURIComponent(process.env.MONGODB_PASSWORD)
-
-// ℹ️ Sets the MongoDB URI for our app to have access to it.
-// If no env has been set, we dynamically set it to whatever the folder name was upon the creation of the app
-
-const MONGO_URI = `mongodb+srv://Conjectures:${password}@cluster0.n9h6bsz.mongodb.net/alcohol-rater-2?retryWrites=true&w=majority` ||
-  "mongodb://127.0.0.1:27017/backend";
+const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/backend";
 
 mongoose
   .connect(MONGO_URI)
   .then((x) => {
     const databaseName = x.connections[0].name;
-    console.log(`Connected to Mongo! Database name: "${databaseName}"`);
+    console.log(`✅ Connected to MongoDB! Database name: "${databaseName}"`);
   })
   .catch((err) => {
-    console.error("Error connecting to mongo: ", err);
+    console.error("❌ Error connecting to MongoDB:", err);
   });
