@@ -34,10 +34,23 @@ const MONGO_URI =
 // Middleware configuration
 module.exports = (app) => {
 
-  app.use(cors({
-    origin: "http://localhost:3000",   
-    credentials: true                  
-  }));
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://taskify-frontend-n8pd.onrender.com"
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
 
   // In development environment the app logs
   app.use(logger("dev"));
